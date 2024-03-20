@@ -54,30 +54,32 @@ class _MainScreenState extends State<MainScreen> {
         child: ListView(children: [
           FutureBuilder(
               future: getData(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<List<Map>> snapshot) {
+              builder:
+                  (BuildContext context, AsyncSnapshot<List<Map>> snapshot) {
                 if (snapshot.hasData) {
-                  return ListView.builder(
-                      physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (context, i) {
-                        print(snapshot.data![i]["name"].toString());
-                        return Card(
-                            margin: EdgeInsets.all(10),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                      snapshot.data![i]["name"].toString()),
-                                  Checkbox(value: check, onChanged: null)
-                                ],
-                              ),
-                            ));
-                      });
+                  return DataTable(
+                      columns: [
+                        DataColumn(label: Text("Name")),
+                        DataColumn(label: Text("email")),
+                        DataColumn(label: Text("password")),
+                      ],
+                      rows: snapshot.data!
+                          .map(
+                            (e) => DataRow(
+                              cells: [
+                                DataCell(
+                                  Text(e['name'].toString()),
+                                ),
+                                DataCell(
+                                  Text(e['email'].toString()),
+                                ),
+                                DataCell(
+                                  Text(e['password'].toString()),
+                                ),
+                              ],
+                            ),
+                          )
+                          .toList());
                 }
                 return Center(child: CircularProgressIndicator());
               })
