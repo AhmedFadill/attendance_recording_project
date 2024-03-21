@@ -38,6 +38,7 @@ dependencies:
   flutter_riverpod: ^2.5.1
   sqflite: ^2.3.2
   sqflite_common_ffi: ^2.3.2+1
+  flutter_speed_dial: ^7.0.0
 
 dev_dependencies:
   flutter_test:

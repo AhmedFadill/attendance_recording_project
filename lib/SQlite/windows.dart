@@ -34,7 +34,8 @@ class SqlWin {
         "name" TEXT NOT NULL,
         "Stage" TEXT NOT NULL,
         "Card_number" TEXT UNIQUE NOT NULL,
-        "Note"  TEXT
+        "Note"  TEXT,
+        "present" TEXT
       )
     ''');
 
@@ -79,6 +80,12 @@ class SqlWin {
     // الدالة لإغلاق قاعدة البيانات.
   Future<void> closeDb(Database db) async {
     await db.close();
+  }
+
+  Future<void> deleteDatabase1() async {
+    var databaseFactory = databaseFactoryFfi;
+    await databaseFactory.deleteDatabase('Desktop/ab.db');
+    print("database deleted");
   }
 
 }

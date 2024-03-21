@@ -44,6 +44,19 @@ class SqLite {
         "password" TEXT NOT NULL
       )
     ''');
+
+    
+    await db.execute('''
+    CREATE TABLE "Student" (
+        "id" INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT,
+        "name" TEXT NOT NULL,
+        "Stage" TEXT NOT NULL,
+        "Card_number" TEXT UNIQUE NOT NULL,
+        "Note"  TEXT,
+        "present" TEXT
+      )
+    ''');
+
     print("creat table is done ============================");
   }
 
@@ -75,5 +88,12 @@ class SqLite {
     Database? mydb = await db;
     var result = await mydb!.rawQuery(sql);
     return result;
+  }
+
+  Future<void> deleteDatabase1() async {
+    String databasePath = await getDatabasesPath();
+    String path = join(databasePath, 'test.db');
+    await deleteDatabase(path);
+    print("Database deleted.");
   }
 }
