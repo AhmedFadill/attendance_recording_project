@@ -46,65 +46,149 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            "Home",
-            style: TextStyle(color: Colors.white),
+      appBar: AppBar(
+        title: Text(
+          "Home",
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: const Color.fromARGB(255, 3, 62, 109),
+        centerTitle: true,
+      ),
+      body: Container(
+        child: ListView(children: [
+          FutureBuilder(
+              future: getData(),
+              builder:
+                  (BuildContext context, AsyncSnapshot<List<Map>> snapshot) {
+                if (snapshot.hasData) {
+                  return DataTable(
+                      columns: [
+                        DataColumn(label: Text("Name"), numeric: false),
+                        DataColumn(label: Text("email"), numeric: false),
+                        DataColumn(label: Text("password"), numeric: false),
+                      ],
+                      rows: snapshot.data!
+                          .map(
+                            (e) => DataRow(
+                              cells: [
+                                DataCell(
+                                  Text(e['name'].toString()),
+                                  onTap: () => print(e),
+                                ),
+                                DataCell(
+                                  Text(e['email'].toString()),
+                                ),
+                                DataCell(
+                                  Text(e['password'].toString()),
+                                ),
+                              ],
+                            ),
+                          )
+                          .toList());
+                }
+                return Center(child: CircularProgressIndicator());
+              })
+        ]),
+      ),
+      floatingActionButton: SpeedDial(
+        spacing: 15,
+        spaceBetweenChildren: 10,
+        animatedIcon: AnimatedIcons.menu_close,
+        animatedIconTheme: IconThemeData(color: Colors.white),
+        backgroundColor: Color.fromARGB(255, 3, 62, 109),
+        overlayColor: Colors.black,
+        overlayOpacity: 0.4,
+        children: [
+          SpeedDialChild(
+            child: Icon(Icons.add),
+            label: "Add",
+            onTap: () => showModalBottomSheet(
+              context: context,
+              builder: (context) {
+                return Container(
+                  color: Colors.lightBlue,
+                );
+              },
+            ),
           ),
-          backgroundColor: const Color.fromARGB(255, 3, 62, 109),
-          centerTitle: true,
-        ),
-        body: Container(
-          child: ListView(children: [
-            FutureBuilder(
-                future: getData(),
-                builder:
-                    (BuildContext context, AsyncSnapshot<List<Map>> snapshot) {
-                  if (snapshot.hasData) {
-                    return DataTable(
-                        columns: [
-                          DataColumn(label: Text("Name"), numeric: false),
-                          DataColumn(label: Text("email"), numeric: false),
-                          DataColumn(label: Text("password"), numeric: false),
-                        ],
-                        rows: snapshot.data!
-                            .map(
-                              (e) => DataRow(
-                                cells: [
-                                  DataCell(
-                                    Text(e['name'].toString()),
-                                  ),
-                                  DataCell(
-                                    Text(e['email'].toString()),
-                                  ),
-                                  DataCell(
-                                    Text(e['password'].toString()),
-                                  ),
-                                ],
-                              ),
-                            )
-                            .toList());
-                  }
-                  return Center(child: CircularProgressIndicator());
-                })
-          ]),
-        ),
-        floatingActionButton: SpeedDial(
-          spacing: 15,
-          spaceBetweenChildren: 10,
-          animatedIcon: AnimatedIcons.menu_close,
-          animatedIconTheme: IconThemeData(color: Colors.white),
-          backgroundColor: Color.fromARGB(255, 3, 62, 109),
-          overlayColor: Colors.black,
-          overlayOpacity: 0.4,
+          SpeedDialChild(
+              child: Icon(
+                Icons.edit,
+              ),
+              label: "Edit"),
+        ],
+      ),
+      drawer: Drawer(
+        elevation: 8,
+        child: ListView(
           children: [
-            SpeedDialChild(child: Icon(Icons.add), label: "Add"),
-            SpeedDialChild(
-                child: Icon(
-                  Icons.edit,
+            Container(
+              color: Colors.amber,
+              child: UserAccountsDrawerHeader(
+                  decoration:
+                      BoxDecoration(color: Color.fromARGB(255, 3, 62, 109)),
+                  accountName: Text("Name"),
+                  accountEmail: Text("mohamed@gmail.com"),
+                  currentAccountPicture: CircleAvatar(
+                    backgroundColor: Colors.white,
+                    child: FlutterLogo(
+                      size: 42,
+                    ),
+                  )),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            const ListTile(
+              leading: Icon(Icons.insert_drive_file_rounded),
+              title: Text(
+                'Show List',
+                style: TextStyle(fontSize: 17),
+              ),
+              trailing: Icon(Icons.arrow_forward_ios),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            const ListTile(
+              leading: Icon(Icons.settings),
+              title: Text(
+                'Settings',
+                style: TextStyle(fontSize: 17),
+              ),
+              trailing: Icon(Icons.arrow_forward_ios),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            ListTile(
+                leading: Icon(Icons.delete),
+                title: Text(
+                  'Delet all data',
+                  style: TextStyle(fontSize: 17),
                 ),
-                label: "Edit"),
+                trailing: Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  databaseHelper2.deleteDatabase1();
+                  print("database deleted");
+                }),
+            const SizedBox(
+              height: 20,
+            ),
+            ListTile(
+                leading: Icon(Icons.add_circle_outline_sharp),
+                title: Text(
+                  'Add data ',
+                  style: TextStyle(fontSize: 17),
+                ),
+                trailing: Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  setData();
+                  print("database added");
+                }),
           ],
-        ));
+        ),
+      ),
+    );
   }
 }
