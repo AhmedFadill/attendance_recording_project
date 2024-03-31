@@ -46,16 +46,41 @@ class SqLite {
     ''');
 
     
-    await db.execute('''
-    CREATE TABLE "Student" (
-        "id" INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT,
-        "name" TEXT NOT NULL,
-        "Stage" TEXT NOT NULL,
-        "Card_number" TEXT UNIQUE NOT NULL,
-        "Note"  TEXT,
-        "present" TEXT
-      )
+
+        await db.execute('''
+    CREATE TABLE Stage (
+        "Id" INTEGER NOT NULL PRIMARY KEY,
+        "Name" VARCHAR(10),
+        "M_E" VARCHAR(20),
+        "Groups" CHAR(2)
+        )
     ''');
+
+    await db.execute('''
+    CREATE TABLE Student (
+      Id INTEGER PRIMARY KEY AUTOINCREMENT,
+      Name VARCHAR(50) NOT NULL,
+      Stage_id INTEGER NOT NULL,
+      Card_number VARCHAR(50),
+      Is_delete TINYINT NOT NULL DEFAULT 0,
+      Note VARCHAR(50),
+      FOREIGN KEY (Stage_id) REFERENCES Stage (Id)
+    )
+    ''');
+
+    await db.execute('''
+    CREATE TABLE Student_absences (
+      Id INTEGER PRIMARY KEY AUTOINCREMENT,
+      Name_student INTEGER NOT NULL,
+      Is_Present INTEGER,
+      Date DATE NOT NULL,
+      Note VARCHAR(50),
+      Type INTEGER NOT NULL,
+      FOREIGN KEY (Name_student) REFERENCES Student (Id)
+    )
+    ''');
+
+    print("Table created successfully without errors");
 
     print("creat table is done ============================");
   }

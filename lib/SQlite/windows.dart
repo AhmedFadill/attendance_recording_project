@@ -53,9 +53,10 @@ class SqlWin {
     CREATE TABLE Student_absences (
       Id INTEGER PRIMARY KEY AUTOINCREMENT,
       Name_student INTEGER NOT NULL,
-      Is_Present VARCHAR(50),
+      Is_Present INTEGER,
       Date DATE NOT NULL,
       Note VARCHAR(50),
+      Type INTEGER NOT NULL,
       FOREIGN KEY (Name_student) REFERENCES Student (Id)
     )
     ''');
@@ -73,28 +74,28 @@ class SqlWin {
   insertData(sql) async {
     Database? mydb = await initDb();
     int result = await mydb.rawInsert(sql);
-    closeDb(mydb);
+ 
     return result;
   }
 
   updateData(sql) async {
     Database? mydb = await initDb();
     int result = await mydb.rawUpdate(sql);
-    closeDb(mydb);
+
     return result;
   }
 
   deletData(sql) async {
     Database? mydb = await initDb();
     int result = await mydb.rawDelete(sql);
-    closeDb(mydb);
+
     return result;
   }
 
   executeQurer(sql) async {
     Database? mydb = await initDb();
     List<Map<String, Object?>> result = await mydb.rawQuery(sql);
-    closeDb(mydb);
+
     return result;
   }
 
