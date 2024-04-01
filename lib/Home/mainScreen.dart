@@ -59,7 +59,7 @@ class _MainScreenState extends State<MainScreen> {
         centerTitle: true,
       ),
       body: Container(
-          child: Home()),
+          child: null),
       floatingActionButton: SpeedDial(
         spacing: 15,
         spaceBetweenChildren: 10,
