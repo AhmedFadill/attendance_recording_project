@@ -24,7 +24,7 @@ class HomeState extends State<Home> {
   dynamic databaseHelper2;
   int date = 0;
   List<bool> hh = [];
-  List<int> a = [];
+  List<int> id = [];
   List<String> name = [];
 
   void initState() {
@@ -40,9 +40,9 @@ class HomeState extends State<Home> {
   getName() async {
     List<Map> data1 = await databaseHelper2.readData("SELECT * FROM Student");
     for (var element in data1) {
-      if (!a.contains(element['Id'])) {
+      if (!id.contains(element['Id'])) {
         name.add(element['Name']);
-        a.add(element['Id']);
+        id.add(element['Id']);
         hh.add(false);
         print(hh);
       }
@@ -106,7 +106,7 @@ class HomeState extends State<Home> {
                   print(e);
                   return DataRow(cells: [
                     DataCell(Text(date == 1
-                        ? '${name[name.indexOf(e['Name_student'] != null ? e['Name_student'] : name[0])]}'
+                        ? '${name[id.indexOf(e['Name_student'] != null ? e['Name_student'] : id[0])]}'
                         : e['Name'])),
                     DataCell(Text('ثالثة')),
                     DataCell(
@@ -119,11 +119,11 @@ class HomeState extends State<Home> {
                           onChanged: (value) {
                             
                               if (date == 0) {
-                                hh[a.indexOf(e['Id'])] = value!;
+                                hh[id.indexOf(e['Id'])] = value!;
                                 print(name);
                                 for (var i = 0; i < name.length; i++) {
                                     databaseHelper2.insertData(
-                                        '''INSERT INTO Student_absences (Name_student, Is_Present, Date, Note, Type) VALUES ("${name[i]}", "${hh[i]}", "${now.year}-${now.month}-${now.day}", '', '')''');
+                                        '''INSERT INTO Student_absences (Name_student, Is_Present, Date, Note, Type) VALUES ("${id[i]}", "${hh[i]}", "${now.year}-${now.month}-${now.day}", '', '')''');
                                   print('insert done');
                                 }
                                 
@@ -135,10 +135,10 @@ class HomeState extends State<Home> {
                                 
                               } else {
                                 setState(() {
-                                  hh[name.indexOf(e['Name_student'])] = value!;
+                                  hh[id.indexOf(e['Name_student'])] = value!;
                                   databaseHelper2
                                       .updateData('''UPDATE Student_absences
-                                                    SET Is_Present = "${hh[name.indexOf(e['Name_student'])]}"
+                                                    SET Is_Present = "${hh[id.indexOf(e['Name_student'])]}"
                                                     WHERE Name_student = "${e['Name_student']}" AND DATE = "${now.year}-${now.month}-${now.day}";''');
                                 });
                               }

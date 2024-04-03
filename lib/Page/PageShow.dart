@@ -23,7 +23,7 @@ class _PageShowState extends State<PageShow> {
     }
 
     List<Map> data1 = await databaseHelper2.readData(
-        "SELECT * FROM Student_absences WHERE Date = '${now.year}-${now.month}-${now.day}'");
+        "SELECT Name,Is_Present FROM Student,Student_absences WHERE Student.ID=Student_absences.Name_student AND Date = '${now.year}-${now.month}-${now.day}'");
 
     return data1;
   }
@@ -71,7 +71,7 @@ class _PageShowState extends State<PageShow> {
                   ],
                   rows: snapshot.data!
                       .map((e) => DataRow(cells: [
-                            DataCell(Text('${e['Name_student']}')),
+                            DataCell(Text('${e['Name']}')),
                             DataCell(Text('الثالثة')),
                             DataCell(Text(
                                 e['Is_Present'] == 'true' ? 'حاظر' : 'غائب')),

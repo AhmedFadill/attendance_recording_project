@@ -13,15 +13,16 @@ class TheMainScreen extends StatefulWidget {
   @override
   State<TheMainScreen> createState() => _TheMainScreenState();
 }
+
 DateTime now = DateTime.now();
+
 class _TheMainScreenState extends State<TheMainScreen> {
   dynamic databaseHelper2;
-  
+
   late String Time;
 
   TextEditingController NameStudent = TextEditingController();
-
-  
+  TextEditingController CardStudent = TextEditingController();
 
   void initState() {
     super.initState();
@@ -46,25 +47,23 @@ class _TheMainScreenState extends State<TheMainScreen> {
         centerTitle: true,
         leading: IconButton(
             onPressed: () async {
-              
-             final DateTime? Date=await showDatePicker(
-                      context: context,
-                      initialDate: now,
-                      firstDate: DateTime(2024, 1, 1),
-                      lastDate: DateTime(2024, 6, 1));
-                      if (Date!=null){
-                        setState(() {
-                          now=Date;
-                          Time = "${now.year}-${now.month}-${now.day}";
-                        });
-                        print(now);
-                      }
-                   
+              final DateTime? Date = await showDatePicker(
+                  context: context,
+                  initialDate: now,
+                  firstDate: DateTime(2024, 1, 1),
+                  lastDate: DateTime(2024, 6, 1));
+              if (Date != null) {
+                setState(() {
+                  now = Date;
+                  Time = "${now.year}-${now.month}-${now.day}";
+                });
+                print(now);
+              }
             },
             icon: Icon(Icons.date_range)),
       ),
       body: Home(
-         now,
+        now,
       ),
       floatingActionButton: SpeedDial(
         spacing: 15,
@@ -82,20 +81,95 @@ class _TheMainScreenState extends State<TheMainScreen> {
               context: context,
               builder: (context) {
                 return Container(
-                  color: Colors.lightBlue,
                   child: Column(
                     children: [
-                      TextField(controller: NameStudent),
-                      ElevatedButton(
-                          onPressed: () {
-                            setState(() {
-                              databaseHelper2.insertData(
-                                  '''INSERT INTO Student (Name,Stage_id,Card_number,Is_delete,Note)  VALUES('${NameStudent.text}','2','123','0','')''');
-                            });
-                            print("insert done");
-                            TheMainScreen();
-                          },
-                          child: Text("Save"))
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: TextField(
+                          textAlign: TextAlign.right,
+                          controller: NameStudent,
+                          decoration: const InputDecoration(
+                              prefixIcon: Icon(Icons.person_pin_rounded),
+                              label: Text(
+                                "اسم الطالب",
+                              ),
+                              border: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20))),
+                              filled: true),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: TextField(
+                          textAlign: TextAlign.right,
+                          controller: CardStudent,
+                          decoration: const InputDecoration(
+                              prefixIcon:
+                                  Icon(Icons.branding_watermark_outlined),
+                              label: Text(
+                                "رقم الهوية",
+                              ),
+                              border: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20))),
+                              filled: true),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Container(
+                        width: 315,
+                        height: 50,
+                        child: ElevatedButton(
+                            style: const ButtonStyle(
+                                backgroundColor: MaterialStatePropertyAll(
+                                    Color.fromARGB(255, 3, 62, 109)),
+                                shape: MaterialStatePropertyAll(
+                                    RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(20))))),
+                            onPressed: () {
+                              if (NameStudent.text != "" &&
+                                  CardStudent.text != "") {
+                                setState(() {
+                                  databaseHelper2.insertData(
+                                      '''INSERT INTO Student (Name,Stage_id,Card_number,Is_delete,Note)  VALUES('${NameStudent.text}','2','${CardStudent.text}','0','')''');
+                                });
+                                print("insert done");
+                                TheMainScreen();
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(const SnackBar(
+                                        behavior: SnackBarBehavior.floating,
+                                        backgroundColor: Colors.green,
+                                        content: Text(
+                                          "تم الاضافة بنجاح",
+                                          textAlign: TextAlign.right,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        )));
+                              } else {
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(const SnackBar(
+                                        behavior: SnackBarBehavior.floating,
+                                        backgroundColor: Colors.red,
+                                        content: Text(
+                                          "لم تتم الاضافة",
+                                          textAlign: TextAlign.right,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        )));
+                              }
+                            },
+                            child: Text("اضافة الى القوائم")),
+                      )
                     ],
                   ),
                 );
@@ -107,6 +181,7 @@ class _TheMainScreenState extends State<TheMainScreen> {
                 Icons.edit,
               ),
               label: "Edit"),
+          SpeedDialChild(child: Icon(Icons.qr_code_scanner_outlined),label: "Scanner",onTap: () => Navigator.pushNamed(context, 'scan'),)
         ],
       ),
       endDrawer: Drawer(
