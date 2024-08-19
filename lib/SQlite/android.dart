@@ -109,7 +109,7 @@ class SqLite {
     return result;
   }
 
-  excuteQure(sql) async {
+  executeQurer(sql) async {
     Database? mydb = await db;
     var result = await mydb!.rawQuery(sql);
     return result;

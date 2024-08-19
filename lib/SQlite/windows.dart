@@ -106,6 +106,7 @@ class SqlWin {
 
   Future<void> deleteDatabase1() async {
     var databaseFactory = databaseFactoryFfi;
+    
     await databaseFactory.deleteDatabase('Desktop/ab.db');
     print("database deleted");
   }

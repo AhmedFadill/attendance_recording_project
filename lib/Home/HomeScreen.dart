@@ -16,14 +16,17 @@ class Home extends StatefulWidget {
   State<Home> createState() => HomeState(Time);
 }
 
+int date = 0;
+List<bool> hdor = [];
+
 class HomeState extends State<Home> {
   HomeState(this.Time);
   final Time;
   late List<Map> data;
 
   dynamic databaseHelper2;
-  int date = 0;
-  List<bool> hh = [];
+
+
   List<int> id = [];
   List<String> name = [];
 
@@ -43,31 +46,30 @@ class HomeState extends State<Home> {
       if (!id.contains(element['Id'])) {
         name.add(element['Name']);
         id.add(element['Id']);
-        hh.add(false);
-        print(hh);
+        hdor.add(false);
       }
-      print(name);
+      print("name of student form table student :$name");
     }
   }
 
   Future<List<Map>> getStudentPresent() async {
     List<Map> data1 =
         await databaseHelper2.readData("SELECT * FROM Student_absences");
-        print (data1);
+    print(data1);
     List<Map> data2 = await databaseHelper2.readData("SELECT * FROM Student");
 
     for (var element in data1) {
       if (element['Date'] == "${now.year}-${now.month}-${now.day}") {
         date = 1;
-        print(data1);
+        print("data1 : $data1");
         print("now date is 1 --------------------------------");
-        List<Map> dataOfappppp =
-        await databaseHelper2.readData("SELECT * FROM Student_absences WHERE DATE='${now.year}-${now.month}-${now.day}'");
+        List<Map> dataOfappppp = await databaseHelper2.readData(
+            "SELECT * FROM Student_absences WHERE DATE='${now.year}-${now.month}-${now.day}'");
         return dataOfappppp;
       } else {
         date = 0;
-        for(int i=0;i<hh.length;i++){
-          hh[i]=false;
+        for (int i = 0; i < hdor.length; i++) {
+          hdor[i] = false;
         }
       }
     }
@@ -111,39 +113,37 @@ class HomeState extends State<Home> {
                     DataCell(Text('ثالثة')),
                     DataCell(
                       Checkbox(
+                          //checkColor: Color(0xFFFF6477db),
+                          activeColor: Color(0xFFFF6477db),
                           value: date == 0
-                              ? hh[name.indexOf(e['Name'])]
+                              ? hdor[name.indexOf(e['Name'])]
                               : e['Is_Present'] == 'true'
                                   ? true
                                   : false,
                           onChanged: (value) {
-                            
-                              if (date == 0) {
-                                hh[id.indexOf(e['Id'])] = value!;
-                                print(name);
-                                for (var i = 0; i < name.length; i++) {
-                                    databaseHelper2.insertData(
-                                        '''INSERT INTO Student_absences (Name_student, Is_Present, Date, Note, Type) VALUES ("${id[i]}", "${hh[i]}", "${now.year}-${now.month}-${now.day}", '', '')''');
-                                  print('insert done');
-                                }
-                                
-                                  
-                               setState(() {
-                                 date = 1;
-                               });
-                                
-                                
-                              } else {
-                                setState(() {
-                                  hh[id.indexOf(e['Name_student'])] = value!;
-                                  databaseHelper2
-                                      .updateData('''UPDATE Student_absences
-                                                    SET Is_Present = "${hh[id.indexOf(e['Name_student'])]}"
-                                                    WHERE Name_student = "${e['Name_student']}" AND DATE = "${now.year}-${now.month}-${now.day}";''');
-                                });
+                            if (date == 0) {
+                              hdor[id.indexOf(e['Id'])] = value!;
+                              print(name);
+                              for (var i = 0; i < name.length; i++) {
+                                databaseHelper2.insertData(
+                                    '''INSERT INTO Student_absences (Name_student, Is_Present, Date, Note, Type) VALUES ("${id[i]}", "${hdor[i]}", "${now.year}-${now.month}-${now.day}", '', '')''');
+                                print('insert done');
                               }
+
+                              setState(() {
+                                date = 1;
+                              });
+                            } else {
+                              setState(() {
+                                hdor[id.indexOf(e['Name_student'])] = value!;
+                                databaseHelper2
+                                    .updateData('''UPDATE Student_absences
+                                                    SET Is_Present = "${hdor[id.indexOf(e['Name_student'])]}"
+                                                    WHERE Name_student = "${e['Name_student']}" AND DATE = "${now.year}-${now.month}-${now.day}";''');
+                              });
+                            }
                             ;
-                            print(hh);
+                            print(hdor);
                           }),
                     )
                   ]);
